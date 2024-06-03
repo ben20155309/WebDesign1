@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kurekure</title>
+    <style>
+        header{
+            font-size: 25px;
+            background-color: aqua;
+        }
+        #main-text{
+            text-align: center;
+        }
+        #gif_div{
+            height: 300px;
+            position: relative
+        }
+        #count{
+            text-align: center;
+            border-bottom: black solid;
+        }
+        #gif{
+            height: 300px;
+            display: none;
+        }
+        #but_div{
+            border-top: black solid;
+            text-align: center;
+            font-size: 80px;
+            background-color: aqua;
+            height: 150px;
+        }
+        #but{
+            font-size: 70px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 id="main-text">kurekure</h1>
+        <p id="count">number of times: <span id="number">0</span></p>
+    </header>
+    <div id="gif_div"><p><img src="images/black.gif" alt="" id="gif"></p></div>
+    <div id="but_div">
+        <button id="but" type="button" onclick="run()">按一下</button>
+    </div>
+    <audio id="audio">
+        <source src="audio/kurekure.mp3" type="audio/mp3">
+    </audio>
+    <script>
+        var numberElement = document.getElementById('number');
+        var currentValue = 0;
+        var initialPosition;
+        let endPosition;
+        let animationFrameId;
+
+        function updateNumber() {
+            numberElement.textContent = currentValue;
+        }
+        function run() {
+            var screenWidth = window.innerWidth;
+            var horizontalScroll = window.pageXOffset || window.scrollX;
+            var rightEdge = screenWidth + horizontalScroll;
+            initialPosition = rightEdge - 200;
+            var audio = document.getElementById('audio');
+            if (!audio.paused){
+                audio.pause();
+                audio.currentTime = 0;
+            }
+            audio.play();
+            document.getElementById('gif').style.display = 'block';
+            const box = document.getElementById('gif_div');
+            let position = initialPosition;
+            endPosition = window.innerWidth - 50;
+
+            function moveBox() {
+                position -= 10;
+                if (position >= endPosition) {
+                    position = endPosition;
+                    box.style.left = position + 'px';
+                    setTimeout(resetBox, 1000);
+                    return;
+                }
+                box.style.left = position + 'px';
+                animationFrameId = requestAnimationFrame(moveBox);
+            }
+
+            function resetBox() {
+                box.style.left = initialPosition + 'px';
+            }
+
+            cancelAnimationFrame(animationFrameId);
+            moveBox();
+            currentValue++;
+            updateNumber();
+        }
+    </script>
+</body>
+</html>
